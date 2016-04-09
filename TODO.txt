@@ -1,0 +1,42 @@
+
+# TODO
+
+###### Partition ######
+
+1. Shrink Linux partition
+2. Extend C:
+Info: https://technet.microsoft.com/en-us/magazine/gg309169.aspx
+Info: http://www.makeuseof.com/tag/shrink-extend-volumes-partitions-windows-7/
+Info: http://www.wikihow.com/Allocate-Free-Space-to-C-Drive-in-Windows-8
+
+Control Panel, search for 'partition', > administrative tools, > disk management,
+right click on partition to shrink, 'shrink volume', extend volume
+
+###### MiSeq Reporter ######
+Install
+
+##### Resume infos & results ######
+
+PPT:
+https://www.youtube.com/watch?v=womKfikWlxM
+https://www.youtube.com/watch?v=A4DkphHI-_0
+https://www.youtube.com/watch?v=6TfYnsyo77o
+
+- explain design of, figures:
+  ° Multiplicom
+  ° TST15
+  ° Haloplex, index reads???
+  -> identify what has to be trimmed of
+
+- explain analysis pipeline of, figures:
+  ° GATK Best Practices, more details
+  ° Surecall, more details, index reads???
+  ° BaseSpace, trimming?
+
+- compare variant callers, theory, compare results:
+  ° Mutect, somatic
+  ° GATK UnifiedGenotyper, haplotype
+  ° Varscan, haplotype
+  ° Freebayes, haplotype
+
+- Find good definition for haplotype
