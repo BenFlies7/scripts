@@ -41,13 +41,16 @@ for arg in directories:
     f = [os.path.join(root,name)
                  for root, dirs, files in os.walk(path_fastq)
                  for name in files
-                 if name.endswith("_sorted.bam")]
+                 if name.endswith(".bam")]
 
     f.sort()
 
     for file in f:
+        print file
         aligned = aligned_counts(file)
+        print aligned
         almnt += aligned
+
 
     percentage = almnt / len(f)
     print "%s : average percentage mapped: %s" %(arg,percentage)

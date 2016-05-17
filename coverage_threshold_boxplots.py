@@ -1,6 +1,12 @@
 #!usr/bin/env python
 # -*- coding: utf-8 -*-
 
+'''
+This script plots the normalized coverage distribution per amplicon in a
+given directory. The average coverage per target region is normalized by
+dividing this value by the overall average coverage of each target sequences.
+'''
+
 #Load modules
 import pybedtools
 import re
@@ -11,25 +17,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from operator import itemgetter
 
-
-
-#Load files
-#BAM_FILE = "/media/partition/Haloplex_Test_1_Late_January/Velona/15061857_S2.bam"
-INTERVALS_BED = "/media/partition/Haloplex/00100-1407755742_Regions.bed"
-
-#BAM_FILE = "/media/partition/Haloplex_Test_2_Mid_February/Velona/15028422_S6.bam"
-#BAM_FILE = "/media/partition/Haloplex_Test_2_Mid_February/Velona/ECD_S9.bam"
-#BAM_FILE = "/media/partition/Haloplex_Test_2_Mid_February/Velona/15051669_S1.bam"
-#BAM_FILE = "/media/partition/Haloplex_Test_2_Mid_February/Velona/15020056_S2.bam"
-#BAM_FILE = "/media/partition/Haloplex_Test_2_Mid_February/Velona/15010800_S3.bam"
-#BAM_FILE = "/media/partition/Haloplex_Test_2_Mid_February/Velona/15039121_S7.bam"
-
-#BAM_FILE = "/media/partition/TST15_Test_1_Early_February/Base_Space/BRAF_15018040/Libraries/15018040_S1.bam"
-#INTERVALS_BED = "/media/partition/TST15_Test_1_Early_February/TST_15-A-manifest.bed"
+#INTERVALS_BED = '/media/partition/TST_15-A-manifest.bed'
+#INTERVALS_BED = '/media/partition/TST_15-B-manifest.bed'
+INTERVALS_BED = '/media/partition/00100-1407755742_Regions.bed'
 
 COVERAGE_THRESHOLD = 1000
 
-directory = '/media/partition/Haloplex/Haloplex_Test_2_Mid_February/Velona'
+#directory = '/media/partition/tst15/MixA'
+#directory = '/media/partition/tst15/MixB'
+directory = '/media/partition/hpx_csc_velona'
 
 fig,ax1 = plt.subplots()
 plt.hold = True
@@ -76,22 +72,27 @@ for file in bam_file_list:
     '''
     print('\nFile: %s \n' %file)
 
+    cov_counter = []
+
+    for interval in coverage_result:
+        cov_counter.append(float(interval[4]))
+
+    cov_mean = np.mean(cov_counter)
+
     for interval in coverage_result:
         if interval[3] not in collected.keys():
             collected[interval[3].encode('ascii','ignore')] = {
-            'Coverages' : [float(interval[4])],
+            'Coverages' : [float(interval[4]) / cov_mean],
             'Median' : 0
             }
         else:
-            collected[interval[3].encode('ascii','ignore')]['Coverages'].append(float(interval[4]))
+            collected[interval[3].encode('ascii','ignore')]['Coverages'].append(float(interval[4]) / cov_mean)
         #collected[interval[3].encode('ascii','ignore')]['Coverages'].append(float(interval[4]))
         if float(interval[4]) <= 1 :
             print('Amplicon %s was not amplified at all !' %(interval[3]))
         elif 1 < float(interval[4]) <= COVERAGE_THRESHOLD:
             print('Amplicon %s was not amplified efficiently (coverage: %s x)' %(interval[3], interval[4]))
     print('\n#####################################\n')
-
-boxes = []
 
 for key, value in collected.items():
     median = np.median(collected[key]['Coverages'])
@@ -101,12 +102,11 @@ for key, value in collected.items():
 for key, value in collected_sorted.items():
     boxes.append(collected_sorted[key]['Coverages'])
 
-plt.boxplot(boxes)
-plt.axhline(y=1000, color = 'r')
-plt.axhline(y=2500, color = 'r')
-plt.axhline(y=5000, color = 'r')
+plt.boxplot(boxes,sym='')
 xtickNames = plt.setp(ax1, xticklabels = collected_sorted.keys())
+#xtickNames = plt.setp(ax1, xticklabels = [])
 plt.setp(xtickNames, rotation=90, fontsize=7)
 plt.ylabel('Coverage (x)')
-plt.title('Comparison of Amplicon Depths')
+plt.xlabel('Target ID')
+#plt.title('Comparison of Amplicon Depths Across Samples')
 plt.show()
