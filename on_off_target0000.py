@@ -1,12 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''
-This script calculates the ratio of reads aligning to genes
-defined in a BED file comparing to the total aligned reads.
-It then plots the result as boxplots
-'''
-
 #import modules
 from collections import namedtuple, defaultdict
 import pysam
@@ -20,47 +14,77 @@ import pandas as pd
 
 #Load files
 REFERENCE = "/media/partition/hg19_broadinstitute/ucsc.hg19.fasta"
-INTERVALS_BED = "/media/partition/00100-1407755742_Regions.bed"
-#INTERVALS_BED = "/media/partition/haloplex_csc_genes.bed"
-#directory = "/media/partition/hpx_csc_velona/"
-directory = "/media/partition/test"
+BED_HPX = "/media/partition/00100-1407755742_Regions.bed"
+BED_TST_A = "/media/partition/TST_15-A-manifest.bed"
+BED_TST_B = "/media/partition/TST_15-B-manifest.bed"
 
-
+hpx_surecall = '/media/partition/collected/hpx_csc_surecall'
+hpx_csc_velona = '/media/partition/collected/hpx_csc_velona'
+tst15_app_A = '/media/partition/collected/tst15_app/mixA'
+tst15_app_B = '/media/partition/collected/tst15_app/mixB'
+tst15_velona_A = '/media/partition/collected/tst15_velona/mixA'
+tst15_velona_B = '/media/partition/collected/tst15_velona/mixB'
 
 #Prepare BED file
-IntervalColumns = namedtuple('bed', ['chr', 'start', 'end'])
-intervals_list = []
+IntervalColumns_hpx = namedtuple('bed', ['chr', 'start', 'end'])
+intervals_list_hpx = []
 
-if INTERVALS_BED:
-    with open(INTERVALS_BED, "r") as fin:
+IntervalColumns_tstA = namedtuple('bed', ['chr', 'start', 'end'])
+intervals_list_tstA = []
+
+IntervalColumns_tstB = namedtuple('bed', ['chr', 'start', 'end'])
+intervals_list_tstB = []
+
+if BED_HPX:
+    with open(BED_HPX, "r") as fin:
         for line in fin.readlines():
             line = line.rstrip('\n')
             line = re.split(r'\t+', line.rstrip('\t'))
-            prc = ()
 
-            #For Agilent Haloplex BED file
             if len(line) == 4:
                 line[1] = int(line[1])
                 line[2] = int(line[2])
-                bed_line = IntervalColumns(*(line[0], int(line[1]), int(line[2])))
-                intervals_list.append(bed_line)
+                bed_line = IntervalColumns_hpx(*(line[0], int(line[1]), int(line[2])))
+                intervals_list_hpx.append(bed_line)
+
+if BED_TST_A:
+    with open(BED_TST_A, "r") as fin:
+        for line in fin.readlines():
+            line = line.rstrip('\n')
+            line = re.split(r'\t+', line.rstrip('\t'))
 
             #For Illumina Trusight Tumor 15 BED files
             if len(line) == 12:
                 line[1] = int(line[1])
                 line[2] = int(line[2])
-                bed_line = IntervalColumns(*(line[0], int(line[1]), int(line[2])))
-                intervals_list.append(bed_line)
-else:
-    print("ERROR: Provide an interval list (bed format)")
+                bed_line = IntervalColumns_tstA(*(line[0], int(line[1]), int(line[2])))
+                intervals_list_tstA.append(bed_line)
+
+if BED_TST_A:
+    with open(BED_TST_A, "r") as fin:
+        for line in fin.readlines():
+            line = line.rstrip('\n')
+            line = re.split(r'\t+', line.rstrip('\t'))
+
+            #For Illumina Trusight Tumor 15 BED files
+            if len(line) == 12:
+                line[1] = int(line[1])
+                line[2] = int(line[2])
+                bed_line = IntervalColumns_tstB(*(line[0], int(line[1]), int(line[2])))
+                intervals_list_tstB.append(bed_line)
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-bam_file_list = [f for f in glob.iglob(directory+"/*.bam")]
+list_hpx_surecall = [f for f in glob.iglob(hpx_surecall+"/*.bam")]
+list_hpx_csc_velona = [f for f in glob.iglob(hpx_csc_velona+"/*.bam")]
+list_tst15_app_A = [f for f in glob.iglob(tst15_app_A+"/*.bam")]
+list_tst15_app_B = [f for f in glob.iglob(tst15_app_B+"/*.bam")]
+list_tst15_velona_A = [f for f in glob.iglob(tst15_velona_A+"/*.bam")]
+list_tst15_velona_B = [f for f in glob.iglob(tst15_velona_B+"/*.bam")]
 
+'''
 boxes = []
-#boxes2 = http://stackoverflow.com/questions/26540035/rotate-label-text-in-seaborn-factorplothttp://stackoverflow.com/questions/26540035/rotate-label-text-in-seaborn-factorplot[]
 collected = defaultdict(list)
 ratio_list = []
 
@@ -111,14 +135,13 @@ bla = pd.DataFrame(collected)
 
 print bla
 
-'''
 g = sns.barplot('Sample','Ratio',data=bla,color='b')
 g, labels = plt.xticks()
 plt.setp(labels, rotation=45)
 plt.show()
-'''
 
 g = sns.boxplot(y='Ratio',data=bla)
 g, labels = plt.xticks()
 plt.setp(labels)
 plt.show()
+'''
