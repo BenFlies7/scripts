@@ -83,6 +83,45 @@ list_tst15_app_B = [f for f in glob.iglob(tst15_app_B+"/*.bam")]
 list_tst15_velona_A = [f for f in glob.iglob(tst15_velona_A+"/*.bam")]
 list_tst15_velona_B = [f for f in glob.iglob(tst15_velona_B+"/*.bam")]
 
+collected = {
+'HPX_Surecall' : [],
+'HPX_Velona' : [],
+'TST15_App' : [],
+'TST15_Velona' : []
+}
+
+
+for file in list_hpx_surecall:
+
+    print('currently in file %s') %file
+
+    total_mapped_counter = 0
+    on_target_chr_counter = 0
+
+    samfile = pysam.AlignmentFile(file, "rb")
+    chr_lengths = samfile.lengths
+
+    chr_list = ['chrM','chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10', 'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20', 'chr21', 'chr22', 'chrX', 'chrY']
+
+    for i, chr in enumerate(chr_list):
+
+        on_target_chr_list = []
+
+        total_mapped_chr = samfile.count(chr_list[i], 1, chr_lengths[i])
+        total_mapped_counter += total_mapped_chr
+
+        for interval in intervals_list_hpx:
+            if chr == interval.chr:
+                on_target_chr = samfile.count(interval.chr, interval.start, interval.end)
+                on_target_chr_counter += on_target_chr
+
+    if total_mapped_chr > 0:
+        ratio = on_target_chr_counter / float(total_mapped_counter)
+        print ratio
+        collected['HPX_Surecall'].append(ratio)
+
+print collected
+
 '''
 boxes = []
 collected = defaultdict(list)
