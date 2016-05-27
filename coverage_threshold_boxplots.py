@@ -25,7 +25,7 @@ COVERAGE_THRESHOLD = 1000
 
 #directory = '/media/partition/tst15/MixA'
 #directory = '/media/partition/tst15/MixB'
-directory = '/media/partition/hpx_csc_velona'
+directory = '/media/partition/collected/hpx_csc_surecall'
 
 fig,ax1 = plt.subplots()
 plt.hold = True
@@ -99,6 +99,21 @@ for key, value in collected.items():
     collected[key]['Median'] += median
     collected_sorted = OrderedDict(sorted(collected.items(), key=lambda t: t[1]['Median']))
 
+results_data_frame = pd.DataFrame(collected)
+
+print results_data_frame
+
+
+'''
+g = sns.barplot('Sample','Ratio',data=bla,color='b')
+g, labels = plt.xticks()
+plt.setp(labels, rotation=45)
+plt.show()
+'''
+
+
+'''
+
 for key, value in collected_sorted.items():
     boxes.append(collected_sorted[key]['Coverages'])
 
@@ -110,3 +125,4 @@ plt.ylabel('Coverage (x)')
 plt.xlabel('Target ID')
 #plt.title('Comparison of Amplicon Depths Across Samples')
 plt.show()
+'''
