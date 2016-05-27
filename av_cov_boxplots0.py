@@ -81,6 +81,17 @@ for key, value in collected.items():
     collected_sorted = OrderedDict(sorted(collected.items(), key=lambda t: t[1]['Median']))
 
 
+bla = pd.DataFrame(collected)
+
+print bla
+
+g = sns.barplot('Sample','Ratio',data=bla,color='b')
+g, labels = plt.xticks()
+plt.setp(labels, rotation=45)
+plt.show()
+
+'''
+
 for key, value in collected_sorted.items():
     boxes.append(collected_sorted[key]['Coverages'])
 
@@ -91,3 +102,5 @@ plt.ylabel('Coverage (x)')
 plt.title('Normalized Coverage Distribution per Sample')
 
 plt.show()
+
+'''

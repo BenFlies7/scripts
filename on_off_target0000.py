@@ -77,7 +77,7 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 
 list_hpx_surecall = [f for f in glob.iglob(hpx_surecall+"/*.bam")]
-list_hpx_csc_velona = [f for f in glob.iglob(hpx_csc_velona+"/*.bam")]
+list_hpx_velona = [f for f in glob.iglob(hpx_csc_velona+"/*.bam")]
 list_tst15_app_A = [f for f in glob.iglob(tst15_app_A+"/*.bam")]
 list_tst15_app_B = [f for f in glob.iglob(tst15_app_B+"/*.bam")]
 list_tst15_velona_A = [f for f in glob.iglob(tst15_velona_A+"/*.bam")]
@@ -90,6 +90,7 @@ collected = {
 'TST15_Velona' : []
 }
 
+chr_list = ['chrM','chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10', 'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20', 'chr21', 'chr22', 'chrX', 'chrY']
 
 for file in list_hpx_surecall:
 
@@ -100,8 +101,6 @@ for file in list_hpx_surecall:
 
     samfile = pysam.AlignmentFile(file, "rb")
     chr_lengths = samfile.lengths
-
-    chr_list = ['chrM','chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10', 'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20', 'chr21', 'chr22', 'chrX', 'chrY']
 
     for i, chr in enumerate(chr_list):
 
@@ -115,33 +114,16 @@ for file in list_hpx_surecall:
                 on_target_chr = samfile.count(interval.chr, interval.start, interval.end)
                 on_target_chr_counter += on_target_chr
 
-    if total_mapped_chr > 0:
+    if total_mapped_counter > 0:
         ratio = on_target_chr_counter / float(total_mapped_counter)
         print ratio
         collected['HPX_Surecall'].append(ratio)
 
 print collected
 
-'''
-boxes = []
-collected = defaultdict(list)
-ratio_list = []
-
-file_list = []
-
-collected = {
-'Sample' : [],
-'Ratio' : []
-}
-
-for file in bam_file_list:
+for file in list_hpx_velona:
 
     print('currently in file %s') %file
-
-    basename = re.sub('.bam$','',file)
-    basename = re.sub(directory,'',basename)
-
-    file_list.append(basename)
 
     total_mapped_counter = 0
     on_target_chr_counter = 0
@@ -149,7 +131,34 @@ for file in bam_file_list:
     samfile = pysam.AlignmentFile(file, "rb")
     chr_lengths = samfile.lengths
 
-    chr_list = ['chrM','chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10', 'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20', 'chr21', 'chr22', 'chrX', 'chrY']
+    for i, chr in enumerate(chr_list):
+
+        on_target_chr_list = []
+
+        total_mapped_chr = samfile.count(chr_list[i], 1, chr_lengths[i])
+        total_mapped_counter += total_mapped_chr
+
+        for interval in intervals_list_hpx:
+            if chr == interval.chr:
+                on_target_chr = samfile.count(interval.chr, interval.start, interval.end)
+                on_target_chr_counter += on_target_chr
+
+    if total_mapped_counter > 0:
+        ratio = on_target_chr_counter / float(total_mapped_counter)
+        print ratio
+        collected['HPX_Velona'].append(ratio)
+
+print collected
+
+for file in list_tst15_velona_A:
+
+    print('currently in file %s') %file
+
+    total_mapped_counter = 0
+    on_target_chr_counter = 0
+
+    samfile = pysam.AlignmentFile(file, "rb")
+    chr_lengths = samfile.lengths
 
     for i, chr in enumerate(chr_list):
 
@@ -157,30 +166,124 @@ for file in bam_file_list:
 
         total_mapped_chr = samfile.count(chr_list[i], 1, chr_lengths[i])
         total_mapped_counter += total_mapped_chr
-        #total_mapped_chr_list.append(total_mapped_chr)
 
-        for interval in intervals_list:
+        for interval in intervals_list_tstA:
             if chr == interval.chr:
                 on_target_chr = samfile.count(interval.chr, interval.start, interval.end)
                 on_target_chr_counter += on_target_chr
-                #on_target_chr_list.append(float(on_target_chr / total_mapped_chr))
 
-    if total_mapped_chr > 0:
+    if total_mapped_counter > 0:
         ratio = on_target_chr_counter / float(total_mapped_counter)
-        collected['Sample'].append(basename)
-        collected['Ratio'].append(ratio)
+        print ratio
+        collected['TST15_Velona'].append(ratio)
 
-bla = pd.DataFrame(collected)
+print collected
 
-print bla
+for file in list_tst15_velona_B:
 
-g = sns.barplot('Sample','Ratio',data=bla,color='b')
-g, labels = plt.xticks()
-plt.setp(labels, rotation=45)
+    print('currently in file %s') %file
+
+    total_mapped_counter = 0
+    on_target_chr_counter = 0
+
+    samfile = pysam.AlignmentFile(file, "rb")
+    chr_lengths = samfile.lengths
+
+    for i, chr in enumerate(chr_list):
+
+        on_target_chr_list = []
+
+        total_mapped_chr = samfile.count(chr_list[i], 1, chr_lengths[i])
+        total_mapped_counter += total_mapped_chr
+
+        for interval in intervals_list_tstB:
+            if chr == interval.chr:
+                on_target_chr = samfile.count(interval.chr, interval.start, interval.end)
+                on_target_chr_counter += on_target_chr
+
+    if total_mapped_counter > 0:
+        ratio = on_target_chr_counter / float(total_mapped_counter)
+        print ratio
+        collected['TST15_Velona'].append(ratio)
+
+print collected
+
+for file in list_tst15_app_A:
+
+    print('currently in file %s') %file
+
+    total_mapped_counter = 0
+    on_target_chr_counter = 0
+
+    samfile = pysam.AlignmentFile(file, "rb")
+    chr_lengths = samfile.lengths
+
+    for i, chr in enumerate(chr_list):
+
+        on_target_chr_list = []
+
+        total_mapped_chr = samfile.count(chr_list[i], 1, chr_lengths[i])
+        total_mapped_counter += total_mapped_chr
+
+        for interval in intervals_list_tstA:
+            if chr == interval.chr:
+                on_target_chr = samfile.count(interval.chr, interval.start, interval.end)
+                on_target_chr_counter += on_target_chr
+
+    if total_mapped_counter > 0:
+        ratio = on_target_chr_counter / float(total_mapped_counter)
+        print ratio
+        collected['TST15_Velona'].append(ratio)
+
+print collected
+
+for file in list_tst15_app_B:
+
+    print('currently in file %s') %file
+
+    total_mapped_counter = 0
+    on_target_chr_counter = 0
+
+    samfile = pysam.AlignmentFile(file, "rb")
+    chr_lengths = samfile.lengths
+
+    for i, chr in enumerate(chr_list):
+
+        on_target_chr_list = []
+
+        total_mapped_chr = samfile.count(chr_list[i], 1, chr_lengths[i])
+        total_mapped_counter += total_mapped_chr
+
+        for interval in intervals_list_tstB:
+            if chr == interval.chr:
+                on_target_chr = samfile.count(interval.chr, interval.start, interval.end)
+                on_target_chr_counter += on_target_chr
+
+    if total_mapped_counter > 0:
+        ratio = on_target_chr_counter / float(total_mapped_counter)
+        print ratio
+        collected['TST15_Velona'].append(ratio)
+
+print collected
+
+
+
+
+for key, value in collected.items():
+    boxes.append(collected[key])
+
+bp = plt.boxplot(boxes,patch_artist=True,sym='')
+
+for box in bp['boxes']:
+    box.set(linewidth=0.1)
+
+for whisker in bp['whiskers']:
+    whisker.set(linewidth=1)
+
+xtickNames = plt.setp(ax1, xticklabels = collected_sorted.keys())
+
+plt.setp(xtickNames, rotation=90, fontsize=7)
+plt.ylabel('Coverage (x)')
+plt.xlabel('Target ID')
+#plt.title('Comparison of Amplicon Depths Across Samples')
 plt.show()
-
-g = sns.boxplot(y='Ratio',data=bla)
-g, labels = plt.xticks()
-plt.setp(labels)
-plt.show()
-'''

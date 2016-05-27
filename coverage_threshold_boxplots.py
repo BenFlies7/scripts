@@ -101,14 +101,19 @@ for key, value in collected.items():
     collected[key]['Median'] += median
     collected_sorted = OrderedDict(sorted(collected.items(), key=lambda t: t[1]['Median']))
 
-results_data_frame = pd.DataFrame(collected)
-
 for key, value in collected_sorted.items():
     boxes.append(collected_sorted[key]['Coverages'])
 
-plt.boxplot(boxes,sym='')
+bp = plt.boxplot(boxes,patch_artist=True,sym='')
+
+for box in bp['boxes']:
+    box.set(linewidth=0.1)
+
+for whisker in bp['whiskers']:
+    whisker.set(linewidth=1)
+
 xtickNames = plt.setp(ax1, xticklabels = collected_sorted.keys())
-#xtickNames = plt.setp(ax1, xticklabels = [])
+
 plt.setp(xtickNames, rotation=90, fontsize=7)
 plt.ylabel('Coverage (x)')
 plt.xlabel('Target ID')

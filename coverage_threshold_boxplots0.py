@@ -27,7 +27,7 @@ COVERAGE_THRESHOLD = 1000
 
 #directory = '/media/partition/tst15/MixA'
 #directory = '/media/partition/tst15/MixB'
-directory = '/media/partition/collected/hpx_csc_surecall'
+directory = '/media/partition/collected/test'
 
 fig,ax1 = plt.subplots()
 plt.hold = True
@@ -78,23 +78,20 @@ for file in bam_file_list:
     cov_mean = np.mean(cov_counter)
 
     for interval in coverage_result:
-        if interval[3] not in collected.keys():
-            collected[interval[3].encode('ascii','ignore')] = {
-            'Coverages' : [float(interval[4]) / cov_mean],
-            'Median' : 0
-            }
-        else:
-            collected[interval[3].encode('ascii','ignore')]['Coverages'].append(float(interval[4]) / cov_mean)
+        collected[interval[3].encode('ascii','ignore')].append(float(interval[4]) / cov_mean)
+
 
 for key, value in collected.items():
-    median = np.median(collected[key]['Coverages'])
+    median = np.median(collected[key])
     collected[key]['Median'] += median
     collected_sorted = OrderedDict(sorted(collected.items(), key=lambda t: t[1]['Median']))
+
+map(collected_sorted.pop, ['Median'])
 
 results_data_frame = pd.DataFrame(collected)
 
 print results_data_frame
 
-g = sns.boxplot(y='Coverages',data=results_data_frame,color='b',linewidth=0.5)
+g = sns.boxplot(data=results_data_frame,color='b')
 
 plt.show()
