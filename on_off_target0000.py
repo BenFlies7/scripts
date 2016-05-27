@@ -60,8 +60,8 @@ if BED_TST_A:
                 bed_line = IntervalColumns_tstA(*(line[0], int(line[1]), int(line[2])))
                 intervals_list_tstA.append(bed_line)
 
-if BED_TST_A:
-    with open(BED_TST_A, "r") as fin:
+if BED_TST_B:
+    with open(BED_TST_B, "r") as fin:
         for line in fin.readlines():
             line = line.rstrip('\n')
             line = re.split(r'\t+', line.rstrip('\t'))
