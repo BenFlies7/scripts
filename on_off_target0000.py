@@ -284,7 +284,7 @@ for whisker in bp['whiskers']:
 xtickNames = plt.setp(ax1, xticklabels = collected.keys())
 
 plt.setp(xtickNames, rotation=90, fontsize=7)
+
 plt.ylabel('Coverage (x)')
-plt.xlabel('Target ID')
-#plt.title('Comparison of Amplicon Depths Across Samples')
+
 plt.show()
