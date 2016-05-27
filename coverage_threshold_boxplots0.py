@@ -68,10 +68,6 @@ for file in bam_file_list:
 
     coverage_result = almnt.coverage(intervals_list).sort()
 
-    '''
-    Print amplicons that have not been amplified at all
-    and amplicons that have coverage < 1000x
-    '''
     print('\nFile: %s \n' %file)
 
     cov_counter = []
@@ -90,12 +86,6 @@ for file in bam_file_list:
         else:
             collected[interval[3].encode('ascii','ignore')]['Coverages'].append(float(interval[4]) / cov_mean)
 
-        if float(interval[4]) <= 1 :
-            print('Amplicon %s was not amplified at all !' %(interval[3]))
-        elif 1 < float(interval[4]) <= COVERAGE_THRESHOLD:
-            print('Amplicon %s was not amplified efficiently (coverage: %s x)' %(interval[3], interval[4]))
-    print('\n#####################################\n')
-
 for key, value in collected.items():
     median = np.median(collected[key]['Coverages'])
     collected[key]['Median'] += median
@@ -103,14 +93,8 @@ for key, value in collected.items():
 
 results_data_frame = pd.DataFrame(collected)
 
-for key, value in collected_sorted.items():
-    boxes.append(collected_sorted[key]['Coverages'])
+print results_data_frame
 
-plt.boxplot(boxes,sym='')
-xtickNames = plt.setp(ax1, xticklabels = collected_sorted.keys())
-#xtickNames = plt.setp(ax1, xticklabels = [])
-plt.setp(xtickNames, rotation=90, fontsize=7)
-plt.ylabel('Coverage (x)')
-plt.xlabel('Target ID')
-#plt.title('Comparison of Amplicon Depths Across Samples')
+g = sns.boxplot(y='Coverages',data=results_data_frame,color='b',linewidth=0.5)
+
 plt.show()
