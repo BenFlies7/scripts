@@ -19,11 +19,14 @@ BED_TST_A = "/media/partition/TST_15-A-manifest.bed"
 BED_TST_B = "/media/partition/TST_15-B-manifest.bed"
 
 hpx_surecall = '/media/partition/collected/hpx_csc_surecall'
-hpx_csc_velona = '/media/partition/collected/hpx_csc_velona'
+hpx_velona = '/media/partition/collected/hpx_csc_velona'
 tst15_app_A = '/media/partition/collected/tst15_app/mixA'
 tst15_app_B = '/media/partition/collected/tst15_app/mixB'
 tst15_velona_A = '/media/partition/collected/tst15_velona/mixA'
 tst15_velona_B = '/media/partition/collected/tst15_velona/mixB'
+
+directory_list = []
+directory_list.extend(hpx_surecall, hpx_velona, tst15_velona_A, tst15_velona_B, tst15_app_A, tst15_app_B)
 
 #Prepare BED file
 IntervalColumns_hpx = namedtuple('bed', ['chr', 'start', 'end'])
