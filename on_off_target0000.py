@@ -90,6 +90,10 @@ collected = {
 'TST15_Velona' : []
 }
 
+fig,ax1 = plt.subplots()
+plt.hold = True
+boxes = []
+
 chr_list = ['chrM','chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10', 'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20', 'chr21', 'chr22', 'chrX', 'chrY']
 
 for file in list_hpx_surecall:
@@ -233,7 +237,7 @@ for file in list_tst15_app_A:
     if total_mapped_counter > 0:
         ratio = on_target_chr_counter / float(total_mapped_counter)
         print ratio
-        collected['TST15_Velona'].append(ratio)
+        collected['TST15_App'].append(ratio)
 
 print collected
 
@@ -262,12 +266,9 @@ for file in list_tst15_app_B:
     if total_mapped_counter > 0:
         ratio = on_target_chr_counter / float(total_mapped_counter)
         print ratio
-        collected['TST15_Velona'].append(ratio)
+        collected['TST15_App'].append(ratio)
 
 print collected
-
-
-
 
 for key, value in collected.items():
     boxes.append(collected[key])
